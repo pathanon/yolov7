@@ -1,8 +1,8 @@
 # Here is the demo video
 # YOLOv7 + rule-based
-![]https://www.youtube.com/watch?v=vQP71ruaAio
+![](https://www.youtube.com/watch?v=vQP71ruaAio)
 # YOLOv7 + LSTM
-![]https://www.youtube.com/watch?v=IBzmanNiBUM
+![](https://www.youtube.com/watch?v=IBzmanNiBUM)
 
 
 
