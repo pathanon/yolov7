@@ -445,6 +445,46 @@ def output_to_keypoint(output):
 
 
 def plot_skeleton_kpts(im, kpts, steps, orig_shape=None):
+    # Modified
+    keypoints = [ 
+        "nose", 
+        "left_eye", 
+        "right_eye", 
+        "left_ear", 
+        "right_ear", 
+        "left_shoulder", 
+        "right_shoulder", 
+        "left_elbow", 
+        "right_elbow", 
+        "left_wrist", 
+        "right_wrist", 
+        "left_hip", 
+        "right_hip", 
+        "left_knee", 
+        "right_knee", 
+        "left_ankle", 
+        "right_ankle" 
+    ]
+    kpts_detect = {
+        "nose":None, 
+        "left_eye":None, 
+        "right_eye":None, 
+        "left_ear":None, 
+        "right_ear":None, 
+        "left_shoulder":None, 
+        "right_shoulder":None, 
+        "left_elbow":None, 
+        "right_elbow":None, 
+        "left_wrist":None, 
+        "right_wrist":None, 
+        "left_hip":None, 
+        "right_hip":None, 
+        "left_knee":None, 
+        "right_knee":None, 
+        "left_ankle":None, 
+        "right_ankle":None 
+    } 
+    # if detected collected
     #Plot the skeleton and keypointsfor coco datatset
     palette = np.array([[255, 128, 0], [255, 153, 51], [255, 178, 102],
                         [230, 230, 0], [255, 153, 255], [153, 204, 255],
@@ -466,12 +506,15 @@ def plot_skeleton_kpts(im, kpts, steps, orig_shape=None):
     for kid in range(num_kpts):
         r, g, b = pose_kpt_color[kid]
         x_coord, y_coord = kpts[steps * kid], kpts[steps * kid + 1]
+        kpts_detect[keypoints[kid]] = np.array([float(x_coord), float(y_coord)])
         if not (x_coord % 640 == 0 or y_coord % 640 == 0):
             if steps == 3:
                 conf = kpts[steps * kid + 2]
                 if conf < 0.5:
                     continue
+            
             cv2.circle(im, (int(x_coord), int(y_coord)), radius, (int(r), int(g), int(b)), -1)
+
 
     for sk_id, sk in enumerate(skeleton):
         r, g, b = pose_limb_color[sk_id]
@@ -487,3 +530,32 @@ def plot_skeleton_kpts(im, kpts, steps, orig_shape=None):
         if pos2[0] % 640 == 0 or pos2[1] % 640 == 0 or pos2[0]<0 or pos2[1]<0:
             continue
         cv2.line(im, pos1, pos2, (int(r), int(g), int(b)), thickness=2)
+    
+    angle_detect = prepare_angle(kpts_detect)
+
+    return kpts_detect,angle_detect
+
+# Modifing for getting elbow angle
+def calculate_angle(point_lists):
+    [x1,y1,x2,y2,x3,y3] = point_lists
+    angle = math.degrees(math.atan2(y3-y2,x3-x2)-math.atan2(y1-y2,x1-x2))
+    if angle < 0:
+        angle*=-1
+    return angle
+
+def get_angle(kp_detects,interested_list):
+    points_list = []
+    for name_ in interested_list:
+        points_list.append(kp_detects[name_][0])
+        points_list.append(kp_detects[name_][1])
+    return calculate_angle(points_list)
+
+def prepare_angle(kp_detects):
+    angle_detect = dict()
+
+    LE_angle_name_list = ["left_shoulder","left_elbow", "left_wrist"]
+    RE_angle_name_list = ["right_shoulder","right_elbow", "right_wrist"]
+    
+    angle_detect["LE_angle"] = get_angle(kp_detects,LE_angle_name_list)
+    angle_detect["RE_angle"] = get_angle(kp_detects,RE_angle_name_list)
+    return angle_detect
