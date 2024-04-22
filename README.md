@@ -1,3 +1,33 @@
+# Here is the demo video
+# YOLOv7 + rule-based
+![]https://www.youtube.com/watch?v=vQP71ruaAio
+# YOLOv7 + LSTM
+![]https://www.youtube.com/watch?v=IBzmanNiBUM
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Official YOLOv7
 
 Implementation of paper - [YOLOv7: Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors](https://arxiv.org/abs/2207.02696)
